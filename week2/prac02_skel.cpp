@@ -1,4 +1,4 @@
-//prac02_skel.cpp
+// prac02_skel.cpp
 #include <iostream>
 #include <cstdlib>
 using std::cin, std::cout, std::endl, std::cerr;
@@ -59,19 +59,96 @@ public:
         }
     }
     //  ・>>演算子のオーバーロード：分母が0の場合、「標準入力で分母に0が設定されています」とエラー文を出す。
-    //  　分母がマイナスの場合、分子にマイナスが付くようにする
+    //   分母がマイナスの場合、分子にマイナスが付くようにする
     friend std::istream &operator>>(std::istream &stin, Fraction &g);
     //  ・<<演算子のオーバーロード：分子が0の場合、0を出力。分母が1の場合、分母が出力されないようにする
+    friend std::ostream &operator<<(std::ostream &out, Fraction g);
     //  ・+演算子のオーバーロード：分数の足し算をする
+    friend Fraction operator+(Fraction i, Fraction j);
     //  ・-演算子のオーバーロード：分数の引き算をする
+    friend Fraction operator-(Fraction i, Fraction j);
     //  ・*演算子のオーバーロード：「定数*分数」と「分数*定数」にも対応できるようにする
+    friend Fraction operator*(Fraction i, Fraction j);
     //  ・/演算子のオーバーロード：分数の割り算をする
+    friend Fraction operator/(Fraction i, Fraction j);
 };
 
-    std::istream &operator>>(std::istream& stin, Fraction& g) {
-        stin >> g.numerator >> g.denominator;
-        return stin;
+std::istream &operator>>(std::istream &stin, Fraction &g)
+{
+    stin >> g.numerator >> g.denominator;
+    g.reduce();
+    return stin;
+}
+
+std::ostream &operator<<(std::ostream &out, Fraction g)
+{
+    if (g.denominator < 0)
+    {
+        g.denominator = -g.denominator;
+        g.numerator = -g.numerator;
     }
+
+    (g.denominator != g.numerator) ? out << "(" << g.numerator << "/" << g.denominator << ")" : out << g.numerator;
+    return out;
+}
+
+Fraction operator+(Fraction i, Fraction j)
+{
+    if (i.denominator == j.denominator)
+    {
+        Fraction f(i.numerator + j.numerator, i.denominator);
+        f.reduce();
+        return f;
+    }
+    else
+    {
+        Fraction f;
+        f.denominator = i.denominator * j.denominator;
+        f.numerator = i.numerator * j.denominator + j.numerator * i.denominator;
+        f.reduce();
+        return f;
+    }
+}
+
+Fraction operator-(Fraction i, Fraction j)
+{
+    if (i.denominator == j.denominator)
+    {
+        Fraction f(i.numerator - j.numerator, i.denominator);
+        f.reduce();
+        return f;
+    }
+    else
+    {
+        Fraction f;
+        f.denominator = i.denominator * j.denominator;
+        f.numerator = i.numerator * j.denominator - j.numerator * i.denominator;
+        f.reduce();
+        return f;
+    }
+}
+
+Fraction operator*(Fraction i, Fraction j)
+{
+    Fraction f;
+    f.denominator = i.denominator * j.denominator;
+    f.numerator = i.numerator * j.numerator;
+    f.reduce();
+    return f;
+}
+
+Fraction operator/(Fraction i, Fraction j)
+{
+    int n{j.numerator};
+    j.numerator = j.denominator;
+    j.denominator = n;
+    j.reduce();
+    Fraction f;
+    f.denominator = i.denominator * j.denominator;
+    f.numerator = i.numerator * j.numerator;
+    f.reduce();
+    return f;
+}
 
 int main()
 {
@@ -82,18 +159,18 @@ int main()
     cin >> g1;
     cout << "分数を入力(g2)-->";
     cin >> g2;
-    // ans = g1 + g2;
-    // cout << "g1+g2 = " << g1 << "+" << g2 << " = " << ans << "\n";
-    // ans = g1 - g2;
-    // cout << "g1-g2 = " << g1 << "-" << g2 << " = " << ans << "\n";
-    // ans = g1 * g2;
-    // cout << "g1*g2 = " << g1 << "*" << g2 << " = " << ans << "\n";
-    // ans = g1 / g2;
-    // cout << "g1/g2 = " << g1 << "/" << g2 << " = " << ans << "\n";
-    // ans = g1 * n;
-    // cout << "g1*定数 = " << g1 << "*" << n << " = " << ans << "\n";
-    // ans = n * g1;
-    // cout << "定数*g1 = " << n << "*" << g1 << " = " << ans << "\n";
+    ans = g1 + g2;
+    cout << "g1+g2 = " << g1 << "+" << g2 << " = " << ans << "\n";
+    ans = g1 - g2;
+    cout << "g1-g2 = " << g1 << "-" << g2 << " = " << ans << "\n";
+    ans = g1 * g2;
+    cout << "g1*g2 = " << g1 << "*" << g2 << " = " << ans << "\n";
+    ans = g1 / g2;
+    cout << "g1/g2 = " << g1 << "/" << g2 << " = " << ans << "\n";
+    ans = g1 * n;
+    cout << "g1*定数 = " << g1 << "*" << n << " = " << ans << "\n";
+    ans = n * g1;
+    cout << "定数*g1 = " << n << "*" << g1 << " = " << ans << "\n";
 
     return 0;
 }

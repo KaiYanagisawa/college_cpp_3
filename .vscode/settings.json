@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "locale": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "algorithm": "cpp"
     }
 }
