@@ -1,4 +1,3 @@
-// prac03_skel.cpp
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -65,8 +64,8 @@ int gettranskosuu(string filename)
 }
 // ファイルの情報をメモリをとりながらtransmatrixに読み込む
 /* ファイルの中身：<TRANSP> 行列サイズ 名前
-① string lineは<TRANSP>の文字列のチェックおよび行列の名前用
-② int sizematrixは行列のサイズを保存および行列の数値用
+① string lineは<TRANSP>の文字列のチェックおよび名前用
+② int sizematrixは行列のサイズを保存
 */
 void readtransitionmatrix(string filename, Transp transmatrix[])
 {
@@ -79,7 +78,7 @@ void readtransitionmatrix(string filename, Transp transmatrix[])
         std::cerr << "エラー：ファイルを開けません" << filename << "\n";
         exit(EXIT_FAILURE);
     }
-    int num{0}; // transmatrix[num]でも可
+    int num{0}; // transmatrix[num]
     while (fin >> line)
     {
         if (line != "<TRANSP>")
@@ -89,20 +88,12 @@ void readtransitionmatrix(string filename, Transp transmatrix[])
         }
         if (fin >> sizematrix)
         {
-            /* 追記する */
-            /* transition_matrix.txt 内のnum個目の行列に対して：
-               transmatrixのデータメンバに行列サイズを保存する
-               行列の値を格納する2次元配列の動的確保(講義資料p.22以降参照)
-               行列の値を格納する1次元配列の動的確保
-            */
-            std::cout << sizematrix << std::endl;
-            transmatrix->size = sizematrix;
-            int **two_dimensional_array = new int *[sizematrix];
+            transmatrix[num].size = sizematrix;
+            transmatrix[num].probability = new double *[sizematrix];// 行列の値を格納する2次元配列の動的確保(講義資料p.22以降参照)
             for (int i = 0; i < sizematrix; i++)
-            {
-                two_dimensional_array[i] = new int[sizematrix];
+            { 
+                transmatrix[num].probability[i] = new double[sizematrix];// 行列の値を格納する1次元配列の動的確保
             }
-            int *one_dimensional_array = new int[sizematrix];
         }
         else
         {
@@ -111,51 +102,50 @@ void readtransitionmatrix(string filename, Transp transmatrix[])
         }
         if (fin >> line)
         {
-            // 追記する
-            // transition_matrix.txt 内のnum個目の行列に対して，transmatrixのデータメンバに行列の名前を保存する
-                }
+            transmatrix[num].name = line;
+        }
         else
         {
             std::cerr << "エラー：名前がありません" << filename << "\n";
             exit(EXIT_FAILURE);
         }
-        // for (//追記する)
-        // {
-        //     for (//追記する)
-        //     {
-        //         if (//追記する)
-        //         {// 処理はなし
-        //         }
-        //         else
-        //         {
-        //             std::cerr << "エラー：行列の値がありません" << filename << "\n";
-        //             exit(EXIT_FAILURE);
-        //         }
-        //     }
-        // }
-        // //必要な処理を追記する
+        for (int i = 0; i < sizematrix; i++)
+        {
+            for (int j = 0; j < sizematrix; j++)
+            {
+                if (fin >> transmatrix[num].probability[i][j])
+                {
+                }
+                else
+                {
+                    std::cerr << "エラー：行列の値がありません" << filename << "\n";
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+        num++;
     }
 }
 
 int main()
 {
-    string inputfile = "transition_matrix.txt"; // 読み込むファイル
+    string inputfile = "transition_matrix.txt";// 読み込むファイル
     Transp *transmatrix;
 
     // 必要なtransmatrix（遷移行列）の数を求めて、numtransに代入
     int numtrans = gettranskosuu(inputfile);
 
     // 上で求めらtransmatrix分の領域を確保する
-    // 追記する
-    transmatrix = new Transp;
+    transmatrix = new Transp[numtrans];
+
     // ファイル内の数値の読み込み
     readtransitionmatrix(inputfile, transmatrix);
 
-    // // transmatrixの検証
-    // for (int i = 0; i < numtrans; i++)
-    // {
-    //     transmatrix[i].checkprob();
-    // }
+    // transmatrixの検証
+    for (int i = 0; i < numtrans; i++)
+    {
+        transmatrix[i].checkprob();
+    }
 
     return 0;
 }
