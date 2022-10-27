@@ -1,6 +1,10 @@
-t.empty())
+
     // {
-    //     cerr << "エラー：スタックにデータがない"
-    //          << "\n";
-    //     exit(EXIT_FAILURE);
+    //     cout << "error\n";
+    // }
+    // while (ptr != nullptr)
+    // {
+    //     count++;
+    //     cout << count << "\n";
+    //     ptr->setNext(ptr->getNext());
     // }

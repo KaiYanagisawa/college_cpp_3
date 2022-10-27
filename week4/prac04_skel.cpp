@@ -32,11 +32,7 @@ public:
 // 値xを持つノードをスタックトップに追加する
 void Stack::push(int v)
 {
-    // cout << ptr->getNext();
-    cout << v;
-    // ptr = new Node[100];
-    // *ptr->getNext() = v;
-    // ptr->setNext(ptr + 1);
+    ptr = new Node(v, ptr);
 }
 
 // スタックトップのノードの値を返す
@@ -48,6 +44,9 @@ int Stack::top() const
 // スタックトップのノードを削除し，スタックトップのnextをスタックトップにする
 void Stack::pop()
 {
+    Node *tmp = ptr;
+    ptr = ptr->getNext();
+    delete tmp;
 }
 
 // スタックの要素数を返す
@@ -58,6 +57,14 @@ size_t Stack::size() const
     // 一時ポインタがnullptrでないかぎり
     // 個数をカウントして
     // 次の一時ポインタを今の一時ポインタが指すようにする
+    size_t count{0};
+    Node *temp_ptr = ptr;
+    while (temp_ptr != nullptr)
+    {
+        count++;
+        temp_ptr = temp_ptr->getNext();
+    }
+    return count;
 }
 
 // 先に取り出したほうをbに，後に取り出したほうをaに詰める
@@ -97,10 +104,6 @@ int main()
 
     for (size_t i{0}; i < count; i++)
     {
-        cout << input[i] << " ";
-    }
-    for (size_t i{0}; i < count; i++)
-    {
         if (input[i] == "+")
         {
             get2numberfromstack(st, a, b);
@@ -125,6 +128,7 @@ int main()
         {
             number = atof(input[i].c_str());
             st.push(number);
+            // cout << st.top();
         }
     }
     if (st.size() != 1)
