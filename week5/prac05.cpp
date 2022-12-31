@@ -42,7 +42,9 @@ void Queue::push(string s) {
     }
     else {
         tail->setNext(new Node(s, nullptr));
+        cout << "setnext " << tail->getData() << "\n";
         tail = tail->getNext();
+        cout << "getnext " << tail->getData() << "\n";
     }
 }
 
@@ -55,7 +57,9 @@ string Queue::front() const {
 void Queue::pop() {
     if (!empty()) {
         if (tail == head) //tail と head が一致しているとき、データが 1 つのときは tail を NULL にする
+        {
             tail = nullptr;
+        }
         Node* tmp = head;
         head = head->getNext();
         delete tmp;
